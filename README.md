@@ -31,6 +31,10 @@
 
 ## ***2 - Overview of Embeddings-based Retrieval***
 
+- In the first section, we will review some of the elements of an embedding-based retrieval system, and how that fits together in a RAG loop with an LLM.
+
+<img src="https://drive.google.com/uc?export=view&id=1h7g19LMQYoAdcpPe4sR_a76BnEDMFwHm">
+
 - 
 
 ***WIP - More Notes Incoming!***
