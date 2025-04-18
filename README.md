@@ -35,6 +35,39 @@
 
 <img src="https://drive.google.com/uc?export=view&id=1h7g19LMQYoAdcpPe4sR_a76BnEDMFwHm">
 
+- This is an overall system diagram of how the RAG process works in practice.
+- The way RAG works is, you have a user query that comes in, and you have a set of documents which you’ve previously embedded and stored in your retrieval system - in this case, Chroma.
+- You take the query, run the query through the same embedding model used to embed your documents, which generates an embedding. 
+- The retrieval system then finds the most relevant documents according to the embedding of that query by finding the nearest neighbor embeddings in the database.
+- We then provide both the query and the relevant documents to the LLM, and the LLM synthesizes information from the retrieved documents to generate an answer.
+- Let’s see how this works in practice.
+- To start with, we’re going to pull in some helper functions from our utilities.
+- The word_wrap function allows us to look at the documents in a nicely printed way.
+
+`from helper_utils import word_wrap;`
+
+- The example that we’re going to use - we’re going to read from a PDF. So we’ll pull in a PDF Reader from the PyPDF Python package - it’s open-source.
+
+`from pypdf import PdfReader;`
+
+- We’re going to read from Microsoft’s 2022 Annual Report.
+- We’re going to extract the texts from the report using this PDF Reader.
+- For every page that the reader has, we’re extracting the text and we’re also removing the whitespace.
+- Another important thing to make sure of is that we’re not sending any empty pages to the retrieval system - that’s also filtered out.
+- In our next step, we need to chunk up these pages, first by character, then by token.
+- To do that, we can grab some useful utilities from LangChain.
+- We can use the Recursive Character Text Splitter and the Sentence Transformers Token Text Splitter.
+- The Character Splitter allows us to divide text recursively according to certain divider characters. The recursive divider characters we’re providing are [‘\n\n’, ‘\n’, ‘. ’, ‘ ’, ‘’], and it will split recursively using these characters targeting a chunk size of 1000.
+- But when we run this, we see that 347 chunks have resulted from this document. 
+- Character Text Splitting isn’t quite enough, because the Embedding Model we use from Sentence-Transformers, has a limited context window width. In fact, it uses 256 characters.
+- That’s the maximum context window length of our embedding model.
+- This is a minor pitfall - the embedding model’s context window length is very important, because typically it will simply truncate characters or tokens beyond its context window.
+- So to make sure we actually capture all the meaning in each chunk when we embed it, it’s important we also chunk according to the token count keeping in mind the limitations of the embedding model later.
+- Hence what we’re doing is we’re using the Sentence Transformer text splitter, with 256 tokens per chunk and overlap of 0.
+- We’re going to take all the chunks created by the Character Splitter, and now re-split these chunks using the Sentence Transformer Splitter.
+
+<img src="https://drive.google.com/uc?export=view&id=1jqdzhibSo2k_SDqdEpnFxPHaIZO108t2">
+
 - 
 
 ***WIP - More Notes Incoming!***
