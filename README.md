@@ -75,6 +75,13 @@
 
 <img src="https://drive.google.com/uc?export=view&id=1-0LlS9CApG57f8s5TJzYkSR4CHakgNQ4">
 
+- In the above example, we have the [CLS] Classifier Token, followed by “I like dogs”.
+- In BERT, each token receives its own Dense Vector Embedding.
+- A Sentence Transformer, on the other hand, allows us to embed entire sentences or even small documents, by pooling the output of all the Token Embeddings to produce a single dense vector per document, or in our case, per chunk.
+
+<img src="https://drive.google.com/uc?export=view&id=15TMPV1KtE5qx1MY6tB10fgPv4s--TM67">
+
 - 
+
 
 ***WIP - More Notes Incoming!***
