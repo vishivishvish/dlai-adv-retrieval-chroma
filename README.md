@@ -68,6 +68,13 @@
 
 <img src="https://drive.google.com/uc?export=view&id=1jqdzhibSo2k_SDqdEpnFxPHaIZO108t2">
 
+- So now we have our text chunks.
+- That’s the first step in any RAG system.
+- The next step is to load the chunks that we have into our retrieval.
+- In this case, we will be using Chroma, so we’ll import it into our script.
+
+<img src="https://drive.google.com/uc?export=view&id=1-0LlS9CApG57f8s5TJzYkSR4CHakgNQ4">
+
 - 
 
 ***WIP - More Notes Incoming!***
