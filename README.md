@@ -111,7 +111,29 @@
 - Now, given the query is “What was the total revenue?”, the retrieval is done by sending this query to Chroma DB using the chroma_collection.query() method, and asking for the Top 5 results. 
 - From the results, we can retrieve solely the list of chunk texts using the JSON structure of the output by accessing the values inside the ‘documents’ key. 
 - Each of the chunk texts inside the list can then be printed using the word_wrap() function to make it more legible, for us to see what we’ve retrieved.
+- Now that the relevant chunks have been retrieved, the next step is to use these chunks together with an LLM to answer our query.
+- For this, we will load our OpenAI key into the environment so we can authenticate, and we’re going to create an OpenAI client.
 
+def rag(query, retrieved_documents, model="gpt-3.5-turbo"):
+    information = "\n\n".join(retrieved_documents)
+
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful expert financial research assistant. Your users are asking questions about information contained in an annual report."
+            "You will be shown the user's question, and the relevant information from the annual report. Answer the user's question using only this information."
+        },
+        {"role": "user", "content": f"Question: {query}. \n Information: {information}"}
+    ]
+    
+    response = openai_client.chat.completions.create(
+        model=model,
+        messages=messages,
+    )
+    content = response.choices[0].message.content
+    return content
+
+-
 
 
 ***WIP - More Notes Incoming!***
