@@ -139,6 +139,8 @@
 
 <img src="https://drive.google.com/uc?export=view&id=1wI1PZnPuUXCIeKxCmp6hFTXXCOP-1UgB">
 
+- It’s important to play with the retrieval system to gain intuition about what the model and the retriever can and cannot do together, before we dive into really analyzing how the system works.
+- In the next section, we’ll talk about some of the pitfalls and common failure modes of using retrieval in a RAG setting.
 
 
 
