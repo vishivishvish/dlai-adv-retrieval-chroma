@@ -81,7 +81,12 @@
 
 <img src="https://drive.google.com/uc?export=view&id=15TMPV1KtE5qx1MY6tB10fgPv4s--TM67">
 
-- 
+- Sentence Transformers are great as an Embedding model - they’re open-source, and all the weights are available online. They’re also easy to run locally.
+- They come built into Chroma, and we can learn more about them through the Sentence Transformers website.
+
+<img src="https://drive.google.com/uc?export=view&id=1bUgdEy4t5Q9d89CXzl_G_QR1yQftKAMm">
+
+
 
 
 ***WIP - More Notes Incoming!***
