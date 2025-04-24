@@ -142,6 +142,14 @@
 - It’s important to play with the retrieval system to gain intuition about what the model and the retriever can and cannot do together, before we dive into really analyzing how the system works.
 - In the next section, we’ll talk about some of the pitfalls and common failure modes of using retrieval in a RAG setting.
 
+## ***3 - Pitfalls of Retrieval - When Simple Vector Search Fails***
 
+## ***4 - Query Expansion***
+
+## ***5 - Cross-encoder Re-ranking***
+
+## ***6 - Embedding Adaptors***
+
+## ***7 - Other Techniques***
 
 ***WIP - More Notes Incoming!***
