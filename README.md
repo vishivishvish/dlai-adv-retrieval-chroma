@@ -133,7 +133,12 @@ def rag(query, retrieved_documents, model="gpt-3.5-turbo"):
     content = response.choices[0].message.content
     return content
 
--
+- In this code block, we are using the “information” variable to append the retrieved_documents into a single string, and inside the prompt to the LLM, we clearly delineate the “query” portion from the “information” portion, to enable the LLM to properly use the contextual information to answer the incoming query, following the guidelines in the System Prompt.
+- Now that the rag() function has been defined, putting it all together:
+
+<img src="https://drive.google.com/uc?export=view&id=1wI1PZnPuUXCIeKxCmp6hFTXXCOP-1UgB">
+
+
 
 
 ***WIP - More Notes Incoming!***
