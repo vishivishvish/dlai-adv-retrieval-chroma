@@ -86,6 +86,11 @@
 
 <img src="https://drive.google.com/uc?export=view&id=1bUgdEy4t5Q9d89CXzl_G_QR1yQftKAMm">
 
+- The above demonstrates what happens when we call the Sentence Transformer Embedding function on the 10th element of the token_split_texts list.
+- The output that we get is a very long, dense vector - a 358-dimensional vector that represents the 10th chunk of text.
+- We will set up the Chroma DB client, and we create a collection called microsoft_annual_report_2022. 
+- We also pass in an Embedding Function as one of the arguments in this collection, which is the Sentence Transformer Embedding Function we defined earlier.
+
 
 
 
