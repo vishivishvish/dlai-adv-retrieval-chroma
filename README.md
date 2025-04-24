@@ -91,6 +91,26 @@
 - We will set up the Chroma DB client, and we create a collection called microsoft_annual_report_2022. 
 - We also pass in an Embedding Function as one of the arguments in this collection, which is the Sentence Transformer Embedding Function we defined earlier.
 
+`chroma_client = chromadb.Client()`
+
+`chroma_collection = chroma_client.create_collection("microsoft_annual_report_2022", embedding_function=embedding_function)`
+
+`ids = [str(i) for i in range(len(token_split_texts))]`
+
+`chroma_collection.add(ids=ids, documents=token_split_texts)`
+
+`chroma_collection.count()`
+
+- The next step is to create a list of IDs (the string version of these numbers) to numerically index the embeddings that we’ll store in the Chroma database. We then add the string IDs and the text chunks themselves directly to the Chroma collection.
+- The .count() method shows that there are 349 rows loaded into this collection.
+- Now, we can connect an LLM and build a full-fledged RAG system.
+- We will demonstrate how querying, retrieval and the LLM all work together.
+
+<img src="https://drive.google.com/uc?export=view&id=1m0lDkfibZVeaTdZphUnBfD961ziOsV1b">
+
+- Now, given the query is “What was the total revenue?”, the retrieval is done by sending this query to Chroma DB using the chroma_collection.query() method, and asking for the Top 5 results. 
+- From the results, we can retrieve solely the list of chunk texts using the JSON structure of the output by accessing the values inside the ‘documents’ key. 
+- Each of the chunk texts inside the list can then be printed using the word_wrap() function to make it more legible, for us to see what we’ve retrieved.
 
 
 
