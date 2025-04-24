@@ -114,8 +114,8 @@
 - Now that the relevant chunks have been retrieved, the next step is to use these chunks together with an LLM to answer our query.
 - For this, we will load our OpenAI key into the environment so we can authenticate, and we’re going to create an OpenAI client.
 
-def rag(query, retrieved_documents, model="gpt-3.5-turbo"):
-    information = "\n\n".join(retrieved_documents)
+`def rag(query, retrieved_documents, model="gpt-3.5-turbo"):`
+`    information = "\n\n".join(retrieved_documents)`
 
     messages = [
         {
