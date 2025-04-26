@@ -144,6 +144,22 @@
 
 ## ***3 - Pitfalls of Retrieval - When Simple Vector Search Fails***
 
+- In this section, we will learn about some of the pitfalls of retrieval with vectors.
+- We will look at a few examples of where simple vector search is not enough to make retrieval work for our RAG application.
+- Just because things are semantically close as vectors in an embedding model, doesn’t always mean you’re going to get good results right out of the box.
+- First, we will get set up with our Chroma DB.
+- We’re going to use a helper function to load our Chroma collection, and we’re going to load the same Sentence Transformer Embedding Function.
+
+`from helper_utils import load_chroma, word_wrap`
+
+`from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction`
+
+`embedding_function = SentenceTransformerEmbeddingFunction()`
+
+`chroma_collection = load_chroma(filename='microsoft_annual_report_2022.pdf', collection_name='microsoft_annual_report_2022', embedding_function=embedding_function)`
+
+`chroma_collection.count()`
+
 - 
 
 ## ***4 - Query Expansion***
