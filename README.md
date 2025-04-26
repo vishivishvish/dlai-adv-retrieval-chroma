@@ -190,7 +190,31 @@ def project_embeddings(embeddings, umap_transform):
     return umap_embeddings  
 ```
 
-- 
+- We define a function called project_embeddings() to do this.
+- It takes as input an array of embeddings and a UMAP transform. 
+- We start by declaring an empty NumPy array of the same length as our embeddings array, but with dimension 2, because we’re going to get two-dimensional projections out.
+- What we’ll do is we’re going to project the embeddings into 2D space one-by-one by running a for loop over them - we do it one-by-one just so that we get consistent behavior from UMAP.
+- The way that UMAP does its projection is somewhat sensitive to its inputs, so to ensure that we get reproducible results, we will do it one-by-one, as opposed to doing it in batches, because the output behavior might then differ batch-to-batch.
+- Then, we use Matplotlib to do a scatterplot of the projected embeddings.
+
+```
+import matplotlib.pyplot as plt
+​
+plt.figure()
+plt.scatter(projected_dataset_embeddings[:, 0], projected_dataset_embeddings[:, 1], s=10)
+plt.gca().set_aspect('equal', 'datalim')
+plt.title('Projected Embeddings')
+plt.axis('off')
+```
+
+- We use the plt.scatter() function - we plot the first element from each, the second element from each, and choose size s = 10.
+
+<img src="https://drive.google.com/uc?export=view&id=1ooKtlN123juFNl7LNZszwzUgRchJ8uzj">
+
+- This is what our dataset looks like inside Chroma, projected down to two dimensions.
+- A more advanced visualization would allow us to hover over each of these dots, look at the text chunk corresponding to each dot, and we would notice that text chunks with similar meanings would occupy places close to each other even in the 2D projection.
+- Sometimes these are unusual structures because a 2D projection cannot represent all the structure of higher dimensional space that the embeddings belong to. But it’s useful for visualization.
+
 
 
 ## ***4 - Query Expansion***
