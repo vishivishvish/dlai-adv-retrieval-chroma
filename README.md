@@ -87,7 +87,8 @@
 <img src="https://drive.google.com/uc?export=view&id=1bUgdEy4t5Q9d89CXzl_G_QR1yQftKAMm">
 
 - The above demonstrates what happens when we call the Sentence Transformer Embedding function on the 10th element of the token_split_texts list.
-- The output that we get is a very long, dense vector - a 358-dimensional vector that represents the 10th chunk of text.
+- The output that we get is a very long, dense vector - a 384-dimensional vector that represents the 10th chunk of text.
+- The default Embedding model used by this function is All-MiniLM-L6-v2.
 - We will set up the Chroma DB client, and we create a collection called microsoft_annual_report_2022. 
 - We also pass in an Embedding Function as one of the arguments in this collection, which is the Sentence Transformer Embedding Function we defined earlier.
 
@@ -150,17 +151,28 @@
 - First, we will get set up with our Chroma DB.
 - We’re going to use a helper function to load our Chroma collection, and we’re going to load the same Sentence Transformer Embedding Function.
 
-`from helper_utils import load_chroma, word_wrap`
+`from helper_utils import load_chroma, word_wrap
+from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+embedding_function = SentenceTransformerEmbeddingFunction()
+chroma_collection = load_chroma(filename='microsoft_annual_report_2022.pdf', collection_name='microsoft_annual_report_2022', embedding_function=embedding_function)
+chroma_collection.count()`
 
-`from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction`
+- We’re also just going to output the count() of the Chroma collection to make sure we’ve got the right number of rows. We’ll see the output of 349, which is what we were expecting.
+- When working with embeddings, it can be useful to visualize the Embedding Space.
+- Embeddings and their vectors are of course a geometric structure, and you can reason about them spatially.
+- Obviously, they’re high-dimensional - 300+ dimensional vectors - but we can project them down into two dimensions which humans can visualize, and this can be useful for reasoning about the structure of the embedding space.
+- To do this low-dimensional projection, we’re going to use the Dimensionality Reduction technique called UMAP (Uniform Manifold Approximation & Projection) - an open-source library that can be used for projecting data down into two or three dimensions to visualize it.
+- UMAP is similar to techniques like PCA and t-SNE, except, UMAP explicitly tries to preserve the structure of the data in terms of distances between points, as much as it can, unlike PCA for example, which just tries to find the dominant direction and project data down that way.
 
-`embedding_function = SentenceTransformerEmbeddingFunction()`
+`import umap
+import numpy as np`
 
-`chroma_collection = load_chroma(filename='microsoft_annual_report_2022.pdf', collection_name='microsoft_annual_report_2022', embedding_function=embedding_function)`
+from tqdm import tqdm
 
-`chroma_collection.count()`
+embeddings = chroma_collection.get(include=['embeddings'])['embeddings']
+umap_transform = umap.UMAP(random_state=0, transform_seed=0).fit(embeddings)
 
-- 
+
 
 ## ***4 - Query Expansion***
 
