@@ -144,7 +144,7 @@
 
 ## ***3 - Pitfalls of Retrieval - When Simple Vector Search Fails***
 
-
+- 
 
 ## ***4 - Query Expansion***
 
