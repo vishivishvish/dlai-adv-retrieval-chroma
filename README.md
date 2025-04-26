@@ -154,7 +154,9 @@ def rag(query, retrieved_documents, model="gpt-3.5-turbo"):
 ```
 from helper_utils import load_chroma, word_wrap
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+
 embedding_function = SentenceTransformerEmbeddingFunction()
+
 chroma_collection = load_chroma(filename='microsoft_annual_report_2022.pdf', collection_name='microsoft_annual_report_2022', embedding_function=embedding_function)
 chroma_collection.count()
 ```
@@ -175,7 +177,20 @@ embeddings = chroma_collection.get(include=['embeddings'])['embeddings']
 umap_transform = umap.UMAP(random_state=0, transform_seed=0).fit(embeddings)
 ```
 
+- What we’re doing is we’re going to fit a UMAP transform.
+- UMAP is basically a model which fits a manifold to your data to project it into two dimensions.
+- We set the random seed and the transform seed to 0 so that we get reproducible results and we can get the same projection every time.
+- Once we fit the transform, we need to use the transform to project the embeddings.
 
+```
+def project_embeddings(embeddings, umap_transform):
+    umap_embeddings = np.empty((len(embeddings),2))
+    for i, embedding in enumerate(tqdm(embeddings)): 
+        umap_embeddings[i] = umap_transform.transform([embedding])
+    return umap_embeddings  
+```
+
+- 
 
 
 ## ***4 - Query Expansion***
