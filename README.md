@@ -151,11 +151,13 @@
 - First, we will get set up with our Chroma DB.
 - We’re going to use a helper function to load our Chroma collection, and we’re going to load the same Sentence Transformer Embedding Function.
 
-`from helper_utils import load_chroma, word_wrap
+```
+from helper_utils import load_chroma, word_wrap
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 embedding_function = SentenceTransformerEmbeddingFunction()
 chroma_collection = load_chroma(filename='microsoft_annual_report_2022.pdf', collection_name='microsoft_annual_report_2022', embedding_function=embedding_function)
-chroma_collection.count()`
+chroma_collection.count()
+```
 
 - We’re also just going to output the count() of the Chroma collection to make sure we’ve got the right number of rows. We’ll see the output of 349, which is what we were expecting.
 - When working with embeddings, it can be useful to visualize the Embedding Space.
