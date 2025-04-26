@@ -92,15 +92,13 @@
 - We will set up the Chroma DB client, and we create a collection called microsoft_annual_report_2022. 
 - We also pass in an Embedding Function as one of the arguments in this collection, which is the Sentence Transformer Embedding Function we defined earlier.
 
-`chroma_client = chromadb.Client()`
-
-`chroma_collection = chroma_client.create_collection("microsoft_annual_report_2022", embedding_function=embedding_function)`
-
-`ids = [str(i) for i in range(len(token_split_texts))]`
-
-`chroma_collection.add(ids=ids, documents=token_split_texts)`
-
-`chroma_collection.count()`
+```
+chroma_client = chromadb.Client()
+chroma_collection = chroma_client.create_collection("microsoft_annual_report_2022", embedding_function=embedding_function)
+ids = [str(i) for i in range(len(token_split_texts))]
+chroma_collection.add(ids=ids, documents=token_split_texts)
+chroma_collection.count()
+```
 
 - The next step is to create a list of IDs (the string version of these numbers) to numerically index the embeddings that we’ll store in the Chroma database. We then add the string IDs and the text chunks themselves directly to the Chroma collection.
 - The .count() method shows that there are 349 rows loaded into this collection.
@@ -115,9 +113,10 @@
 - Now that the relevant chunks have been retrieved, the next step is to use these chunks together with an LLM to answer our query.
 - For this, we will load our OpenAI key into the environment so we can authenticate, and we’re going to create an OpenAI client.
 
-`def rag(query, retrieved_documents, model="gpt-3.5-turbo"):`
+```
+def rag(query, retrieved_documents, model="gpt-3.5-turbo"):
 
-`    information = "\n\n".join(retrieved_documents)`
+    information = "\n\n".join(retrieved_documents)
 
     messages = [
         {
@@ -134,6 +133,7 @@
     )
     content = response.choices[0].message.content
     return content
+```
 
 - In this code block, we are using the “information” variable to append the retrieved_documents into a single string, and inside the prompt to the LLM, we clearly delineate the “query” portion from the “information” portion, to enable the LLM to properly use the contextual information to answer the incoming query, following the guidelines in the System Prompt.
 - Now that the rag() function has been defined, putting it all together:
@@ -166,13 +166,15 @@ chroma_collection.count()
 - To do this low-dimensional projection, we’re going to use the Dimensionality Reduction technique called UMAP (Uniform Manifold Approximation & Projection) - an open-source library that can be used for projecting data down into two or three dimensions to visualize it.
 - UMAP is similar to techniques like PCA and t-SNE, except, UMAP explicitly tries to preserve the structure of the data in terms of distances between points, as much as it can, unlike PCA for example, which just tries to find the dominant direction and project data down that way.
 
-`import umap
-import numpy as np`
-
+```
+import umap
+import numpy as np
 from tqdm import tqdm
 
 embeddings = chroma_collection.get(include=['embeddings'])['embeddings']
 umap_transform = umap.UMAP(random_state=0, transform_seed=0).fit(embeddings)
+```
+
 
 
 
