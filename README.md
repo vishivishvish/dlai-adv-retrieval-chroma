@@ -214,7 +214,7 @@ plt.axis('off')
 - This is what our dataset looks like inside Chroma, projected down to two dimensions.
 - A more advanced visualization would allow us to hover over each of these dots, look at the text chunk corresponding to each dot, and we would notice that text chunks with similar meanings would occupy places close to each other even in the 2D projection.
 - Sometimes these are unusual structures because a 2D projection cannot represent all the structure of higher dimensional space that the embeddings belong to. But it’s useful for visualization.
-
+- 
 
 
 ## ***4 - Query Expansion***
