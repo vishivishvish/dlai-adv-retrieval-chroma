@@ -214,8 +214,22 @@ plt.axis('off')
 - This is what our dataset looks like inside Chroma, projected down to two dimensions.
 - A more advanced visualization would allow us to hover over each of these dots, look at the text chunk corresponding to each dot, and we would notice that text chunks with similar meanings would occupy places close to each other even in the 2D projection.
 - Sometimes these are unusual structures because a 2D projection cannot represent all the structure of higher dimensional space that the embeddings belong to. But it’s useful for visualization.
-- 
+- So what evaluating the quality and performance of a retrieval is about, is actually relevancy and distraction.
+- Let’s take a look at our original query again - the one we used in our RAG example - “What’s the total revenue?”
+- When we examine the 5 chunks retrieved from the Vector DB in response to this query, we see some chunks where the word “revenue” occurs, but the chunk is not actually directly related to answering the question about the total revenue.
+- Let’s take a look at how this query looks when visualized.
+- We’ll grab the embedding for our query using the embedding function, and we grab the embeddings for the retrieved results of the RAG from the Vector DB.
+- We then project both these embeddings into the 2D space created by UMAP - the X represents the query and the circled dots represent the retrieved chunks.
 
+<img src="https://drive.google.com/uc?export=view&id=1fq_aScmb_mAdriIBsDb2uId4pxsP-tqN">
+
+- The heart of the issue is that the Embedding Model that we use to embed our queries and embed our data does not have any knowledge of the task or query we’re trying to answer, at the time we actually retrieve the information. 
+- So the reason that a retrieval system may not always perform the way we expect, is that we’re asking it to perform a specific task using only a general representation. 
+- If we look at another example:
+
+<img src="https://drive.google.com/uc?export=view&id=1aFdmayzExrbRA2R-wffYo1eUPS-9Wfyf">
+
+- We see that in one example, a circled dot is right at the place of the red X, so that’s super relevant as an answer to the query, but some other results from the retrieval are not exactly the nearest neighbors for the search.
 
 ## ***4 - Query Expansion***
 
