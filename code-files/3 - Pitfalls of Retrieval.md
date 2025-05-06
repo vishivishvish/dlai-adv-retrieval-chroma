@@ -1,5 +1,7 @@
 Below is **[Grok's](https://grok.com)** detailed block-by-block description of the Python code, which aims to use ChromaDB for vector search on Microsoft's 2022 annual report, and highlights the limitations of vector search.
 
+---
+
 ### Key Points
 - The code uses ChromaDB for vector search on Microsoft's 2022 annual report, visualizing embeddings with UMAP.
 - It seems likely that the code aims to show both successful and failing retrieval scenarios to highlight vector search limitations.
