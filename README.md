@@ -230,8 +230,22 @@ plt.axis('off')
 <img src="https://drive.google.com/uc?export=view&id=1aFdmayzExrbRA2R-wffYo1eUPS-9Wfyf">
 
 - We see that in one example, a circled dot is right at the place of the red X, so that’s super relevant as an answer to the query, but some other results from the retrieval are not exactly the nearest neighbors for the search.
+- Another example:
+
+<img src="https://drive.google.com/uc?export=view&id=1Nz-igEwWJu321CJIOuH3ehspMbkBLYPk">
+
+- There’s also the trivial problem of a completely irrelevant query, such as “What has Michael Jordan done for us this year?”
+- Projecting the UMAP figure for the results retrieved for this will also show that the retrieved chunks are from all over the place, as they have no connection to the query.
+
+<img src="https://drive.google.com/uc?export=view&id=1kNJDL6AavdUMgF-KyTHmoobrqa6UTxFJ">
+
+- A query like this will retrieve only distractor chunks from the Vector DB, which will have nothing to do with Michael Jordan, and will hence be difficult to understand and debug from an application perspective or from the developer’s perspective.
+- So we need a way to deal with irrelevant queries as well as irrelevant results.
+- In the next section, we will look at a technique to improve the quality of the queries using LLMs, using a technique called Query Expansion.
 
 ## ***4 - Query Expansion***
+
+
 
 ## ***5 - Cross-encoder Re-ranking***
 
