@@ -243,11 +243,8 @@ plt.axis('off')
 - For example, we can fine-tune the embedding model directly using the same type of data that we used in the Embedding Adaptors section.
 - There’s also been some good results published recently, in fine-tuning the LLM itself to expect retrieved results and reason about them.
 - A couple of such papers published are:
-
-1 - RA-DIT: Retrieval-Augmented Dual Instruction Tuning
-
-2 - InstructRetro: Instruction-tuning post Retrieval-Augmented Pretraining
-
+- 1 - RA-DIT: Retrieval-Augmented Dual Instruction Tuning
+- 2 - InstructRetro: Instruction-tuning post Retrieval-Augmented Pretraining
 - We can also experiment with a more complicated Embedding Adaptor model using a full-blown neural network or even a Transformer layer.
 - Similarly, we can use a more complex relevance scoring model rather than just using the Cross Encoder re-ranking described in that section.
 - Finally, an often overlooked piece is that the quality of the retrieved results often depends on the way the data is chunked before it’s stored in the retrieval system itself.
