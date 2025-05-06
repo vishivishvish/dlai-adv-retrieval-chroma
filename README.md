@@ -245,6 +245,7 @@ plt.axis('off')
 - A couple of such papers published are:
 
 1 - RA-DIT: Retrieval-Augmented Dual Instruction Tuning
+
 2 - InstructRetro: Instruction-tuning post Retrieval-Augmented Pretraining
 
 - We can also experiment with a more complicated Embedding Adaptor model using a full-blown neural network or even a Transformer layer.
