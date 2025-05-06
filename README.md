@@ -245,6 +245,13 @@ plt.axis('off')
 
 ## ***4 - Query Expansion***
 
+- The field of Information Retrieval has been around for a while as a sub-field of Natural Language Processing, and there’s many approaches to improving the relevancy of query results.
+- But what’s new is we now have powerful LLMs, and we can use those to augment and enhance the queries that we send to our vector-based retrieval system to get better results.
+- The first type of Query Expansion we’ll talk about is Expansion with Generated Answers.
+- The way this works is, take your query, pass it to an LLM which you prompt to generate a hypothetical or imagined answer to your query, then concatenate your query with the imagined answer and use that as the new query to pass to your retrieval system.
+
+<img src="https://drive.google.com/uc?export=view&id=1REf-l5AcuJgt4OVRiSDjnOQSuZApBEee">
+
 
 
 ## ***5 - Cross-encoder Re-ranking***
