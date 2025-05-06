@@ -239,4 +239,24 @@ plt.axis('off')
 
 ## ***7 - Other Techniques***
 
+- Embedding-space retrieval is still a very active area of research, and there’s a lot of other techniques we should be aware of.
+- For example, we can fine-tune the embedding model directly using the same type of data that we used in the Embedding Adaptors section.
+- There’s also been some good results published recently, in fine-tuning the LLM itself to expect retrieved results and reason about them.
+- A couple of such papers published are:
+
+1 - RA-DIT: Retrieval-Augmented Dual Instruction Tuning
+2 - InstructRetro: Instruction-tuning post Retrieval-Augmented Pretraining
+
+- We can also experiment with a more complicated Embedding Adaptor model using a full-blown neural network or even a Transformer layer.
+- Similarly, we can use a more complex relevance scoring model rather than just using the Cross Encoder re-ranking described in that section.
+- Finally, an often overlooked piece is that the quality of the retrieved results often depends on the way the data is chunked before it’s stored in the retrieval system itself.
+- There’s a lot of experimentation going on about using deep models including Transformers for optimal and intelligent chunking.
+- That wraps up the course - in this course, we covered the basics of Retrieval-Augmented Generation using embeddings-based retrieval. 
+- We looked at how we can use LLMs to augment and enhance our queries to produce better retrieval results.
+- We looked at how we can use a Cross-Encoder model for Re-ranking to score the retrieved results for relevancy.
+- And we looked at how we can train an Embedding Adaptor using data from human feedback about relevancy to improve our query results.
+- Finally we covered some of the more exciting work that’s ongoing right now in the research literature around improving retrieval for AI applications.
+
+**The End!**
+
 ***WIP - More Notes Incoming!***
