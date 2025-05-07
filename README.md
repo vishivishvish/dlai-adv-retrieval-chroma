@@ -296,6 +296,36 @@ print(word_wrap(joint_query))
 
 <img src="https://drive.google.com/uc?export=view&id=13qtc9WAIHvWou3GGmHyOv4y6dRDHEyB6">
 
+- The way we use this method is we generate additional queries that might help in answering the question.
+- We take the original query, pass it to the LLM, and ask it to generate several new queries related to the original query.
+- Then we pass the new queries along with the original query to the Vector Database.
+- That gives us results for each of these - the original and the new queries, and these results are passed into the RAG process.
+- So let’s take a look at how this works in practice.
+
+```
+def augment_multiple_query(query, model="gpt-3.5-turbo"):
+    messages = [`
+        {
+            "role": "system",
+            "content": "You are a helpful expert financial research assistant. Your users are asking questions about an annual report."
+            "Suggest up to five additional related questions to help them find the information they need, for the provided question."
+            "Suggest only short questions without compound sentences. Suggest a variety of questions that cover different aspects of the topic."
+            "Make sure they are complete questions, and that they are related to the original question."
+            "Output one question per line. Do not number the questions."
+        },
+        {"role": "user", "content": query}
+    ]
+
+    response = openai_client.chat.completions.create(
+        model=model,
+        messages=messages,
+    )
+    content = response.choices[0].message.content
+    content = content.split("\n")
+    return content
+```
+
+- 
 
 
 ## ***5 - Cross-encoder Re-ranking***
