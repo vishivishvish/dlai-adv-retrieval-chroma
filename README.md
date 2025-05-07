@@ -290,6 +290,11 @@ print(word_wrap(joint_query))
 
 <img src="https://drive.google.com/uc?export=view&id=1gbFKjljOC6qVOKcc0-5vJ1xzYmnpVh6l">
 
+- If we look at this picture, we see that the Red X is our original query, the Orange X is the new joint query containing the hypothetical answer, and as the close cluster of green circles shows (with the exception of one which is far away on the right), we get a nice cluster of relevant results which are close to the joint query but also somewhat close to the original query.
+- So that was Query Expansion with Generated Answers.
+- But there’s also another type of Query Expansion we can try - Query Expansion with Multiple Queries.
+
+<img src="https://drive.google.com/uc?export=view&id=13qtc9WAIHvWou3GGmHyOv4y6dRDHEyB6">
 
 
 
