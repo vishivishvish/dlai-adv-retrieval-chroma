@@ -253,6 +253,43 @@ plt.axis('off')
 
 <img src="https://drive.google.com/uc?export=view&id=1REf-l5AcuJgt4OVRiSDjnOQSuZApBEee">
 
+- Let’s take a look at how this works in practice.
+- To enable Query Expansion with Generated Answers, here’s the code:
+
+```
+def augment_query_generated(query, model="gpt-3.5-turbo"):
+    messages = [
+        {
+            "role": "system",
+            "content": "You are a helpful expert financial research assistant. Provide an example answer to the given question, that might be found in a document like an annual report."
+        },
+        {"role": "user", "content": query}
+    ] 
+
+    response = openai_client.chat.completions.create(
+        model=model,
+        messages=messages,
+    )
+    content = response.choices[0].message.content
+    return content
+
+original_query = "Was there significant turnover in the executive team?"
+hypothetical_answer = augment_query_generated(original_query)
+
+joint_query = f"{original_query} {hypothetical_answer}"
+print(word_wrap(joint_query))
+```
+
+- The objective is to generate a hypothetical answer, and then we create our joint query, which is basically the original query prepending the hypothetical answer, both presented together to LLM as the joint query.
+- This is what the joint query looks like:
+
+<img src="https://drive.google.com/uc?export=view&id=1tWph-D6u2YiBwM8UeHDgARdkZ_SYnkb_">
+
+- We see the original query, followed by the hypothetical answer.
+- The Chroma collection is queried the usual way, we retrieve the relevant chunks and we use UMAP to project the approx position of the chunks in 2D space.
+
+<img src="https://drive.google.com/uc?export=view&id=1gbFKjljOC6qVOKcc0-5vJ1xzYmnpVh6l">
+
 
 
 
