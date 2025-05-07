@@ -325,8 +325,15 @@ def augment_multiple_query(query, model="gpt-3.5-turbo"):
     return content
 ```
 
-- 
+- The original query we have is “What were the most important factors that contributed to increases in revenue?”
+- Some of the new multi queries we get are - “What were the most important factors that contributed to decreases in revenue?”, “What were the sources of revenue for the company?”, “How were sales and revenue distributed across different product lines or segments?” and so on.
+- We feed all the queries to the Chroma collection, store the retrieved chunks, now we de-duplicate the retrieved chunks (since the same chunk could be retrieved by multiple queries as they’re related), and finally feed a selection from the overall chunks left to the LLM to generate the answer.
 
+<img src="https://drive.google.com/uc?export=view&id=1tYo9naul7FYdmYc-xvsHvBEo8oUbvl2_">
+
+- If we analyze the results from this UMAP projection, we see that the multi queries allow us to hit other parts of the database for answers, which we may not have been able to reach with our original query.
+- The downside of this though, of course, is that now we have more retrieved results than we had originally (even after de-duplication of course). And we’re not sure if and which of these results are actually relevant to our query. 
+- In the next section, using Cross-Encoder Re-ranking, we have a technique that allows us to actually score the relevancy of the returned results and use only the ones that we feel match our original query.
 
 ## ***5 - Cross-encoder Re-ranking***
 
