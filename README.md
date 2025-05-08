@@ -349,6 +349,7 @@ def augment_multiple_query(query, model="gpt-3.5-turbo"):
 - Another way to think about this is - your re-ranking model scores each of the results conditioned on the query, and those with the highest score are the most relevant.
 - Then we can just select the top ranking results as the most relevant to our query.
 - Let’s look at how this is done in practice.
+- 
 
 
 ## ***6 - Embedding Adaptors***
