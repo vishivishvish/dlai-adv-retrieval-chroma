@@ -337,6 +337,20 @@ def augment_multiple_query(query, model="gpt-3.5-turbo"):
 
 ## ***5 - Cross-encoder Re-ranking***
 
+- In the last section, we looked at how to improve the retrieval results by augmenting the query we send by passing it through an LLM.
+- Now we’re going to use a technique called Cross-encoder Re-ranking to score the relevancy of our retrieved results, for the query we sent.
+- Re-ranking is a way to order & score retrieved results according to their relevance to a query.
+- Let’s look at how this works underneath.
+
+<img src="https://drive.google.com/uc?export=view&id=1t_uLnXQoBF3coLOx7obwZXR7HOrmH4Tx">
+
+- In Re-ranking, after we retrieve the results for a particular query, we pass the results along with our query to a re-ranking model. 
+- This allows us to re-rank the output so that the most relevant results have the highest rank. 
+- Another way to think about this is - your re-ranking model scores each of the results conditioned on the query, and those with the highest score are the most relevant.
+- Then we can just select the top ranking results as the most relevant to our query.
+- Let’s look at how this is done in practice.
+
+
 ## ***6 - Embedding Adaptors***
 
 ## ***7 - Other Techniques***
