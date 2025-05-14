@@ -349,7 +349,69 @@ def augment_multiple_query(query, model="gpt-3.5-turbo"):
 - Another way to think about this is - your re-ranking model scores each of the results conditioned on the query, and those with the highest score are the most relevant.
 - Then we can just select the top ranking results as the most relevant to our query.
 - Let’s look at how this is done in practice.
+
+```
+query = "What has been the investment in research and development?"
+results = chroma_collection.query(query_texts=query, n_results=10, include=['documents', 'embeddings'])
+
+retrieved_documents = results['documents'][0]
+
+for document in results['documents'][0]:
+    print(word_wrap(document))
+    print('')
+
+from sentence_transformers import CrossEncoder
+cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+
+pairs = [[query, doc] for doc in retrieved_documents]
+scores = cross_encoder.predict(pairs)
+print("Scores:")
+for score in scores:
+    print(score)
+
+print("New Ordering:")
+for o in np.argsort(scores)[::-1]:
+    print(o+1)
+```
+
+- One use of re-ranking is to get more information out of the long tail of query results.
+- Let’s take another look at the query “What has been the investment in research and development?”
+- Usually we’ve been asking for 5 results in return for our particular query, but now we’ll ask for 10.
+- That means we’ll get a longer tail of possibly useful results.
+- Again, we see that we get the same first 5 results, but we also get 5 new results, which might have relevant information to question.
+- The trick is to figure out which of these results are actually relevant to our specific query instead of just being the nearest neighbors in embedding space. 
+- The way we do that is through a Cross-encoder Re-ranking.
+- Let’s first understand what exactly a Cross-encoder is.
+
+<img src="https://drive.google.com/uc?export=view&id=1SA2HipMmc1DrjCi0_q2e_U51RIFImu1q">
+
+- Sentence Transformers are made up of two kinds of models.
+- Some Encoder models are in the category of “Bi-encoders”, where two separate queries can be encoded separately, and we can then use these two different outputs to compute a Cosine Similarity between them.
+- In contrast, a “Cross-encoder” takes both the queries together, and passed them internally through a Classifier Neural Network, which outputs a score.
+- In this way, a Cross-encoder can be used to score our retrieved results by passing our query and each retrieved document and scoring them using the Cross-encoder.
+
+<img src="https://drive.google.com/uc?export=view&id=1gsuidho2Ftv-xxNO9bJBl5VDWP9TLxBo">
+
+- So we use the Cross-encoder by passing in the original query and each one of the retrieved documents, and using the resulting score as a relevancy or ranking score for our retrieved results.
+
+```
+from sentence_transformers import CrossEncoder
+cross_encoder = CrossEncoder('cross-encoder/ms-marco-MiniLM-L-6-v2')
+
+pairs = [[query, doc] for doc in retrieved_documents]
+scores = cross_encoder.predict(pairs)
+print("Scores:")
+for score in scores:
+    print(score)
+
+print("New Ordering:")
+for o in np.argsort(scores)[::-1]:
+    print(o+1)
+```
+
 - 
+
+
 
 
 ## ***6 - Embedding Adaptors***
