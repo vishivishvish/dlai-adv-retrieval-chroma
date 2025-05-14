@@ -409,7 +409,41 @@ for o in np.argsort(scores)[::-1]:
     print(o+1)
 ```
 
-- 
+- We simply create a list of pair lists, where each pair is the query with one of the retrieved documents, and we pass on this list of pair lists to the Cross-encoder to return scores.
+- When we do this, we see that the values of the similarity scores are not necessarily in the same order as the order in which the retrieved documents are returned, which makes re-ranking necessary - we can now re-order on the basis of the Cross-encoder scores.
+- This has the effect of scanning and extracting more of the information from the long tail on relevancy to the original query.
+- This can of course be combined with Query Expansion (either Generated Answers or Multi-queries) as well. In that case, we would first retrieve and de-duplicate the increased number of results from the Vector DB, and then that increased number of results could be subjected to Cross-encoder Re-ranking (with pairs of Original Query and each Retrieved Doc) to get the most relevant results first.
+
+```
+queries = [original_query] + generated_queries
+
+results = chroma_collection.query(query_texts=queries, n_results=10, include=['documents', 'embeddings'])
+retrieved_documents = results['documents']
+
+# Deduplicate the retrieved documents
+unique_documents = set()
+for documents in retrieved_documents:
+    for document in documents:
+        unique_documents.add(document)
+
+unique_documents = list(unique_documents)
+
+pairs = []
+for doc in unique_documents:
+    pairs.append([original_query, doc])
+
+scores = cross_encoder.predict(pairs)
+
+print("Scores:")
+for score in scores:
+    print(score)
+
+print("New Ordering:")
+for o in np.argsort(scores)[::-1]:
+    print(o)
+```
+
+- One great thing about using a Cross-encoder model like this one, is that it’s extremely lightweight and can be run completely locally.
 
 
 
