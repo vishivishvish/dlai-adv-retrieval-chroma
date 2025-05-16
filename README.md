@@ -444,11 +444,14 @@ for o in np.argsort(scores)[::-1]:
 ```
 
 - One great thing about using a Cross-encoder model like this one, is that it’s extremely lightweight and can be run completely locally.
-
-
-
+- So in this section, we learnt how to use a Cross-encoder for re-ranking, and we’ve applied it both to a single query and also to an augmented query (with query expansion) to filter those results which are relevant to the original query.
+- This is a powerful technique worth experimenting with. It’s a good idea to try and understand, and get an intuition for how the re-ranking score might change depending on the query, because the Cross-encoder Re-ranker can emphasize different parts of your query than an Embedding model.
+- So the ranking it provides is much more conditional on the specific query than what is naïvely returned by the retrieval system.
+- In the next section, we’ll cover Query Adaptors, which are a way to directly augment the Query Embedding itself, using user feedback or other data to get better query results.
 
 ## ***6 - Embedding Adaptors***
+
+
 
 ## ***7 - Other Techniques***
 
