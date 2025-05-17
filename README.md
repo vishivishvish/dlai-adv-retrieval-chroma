@@ -573,8 +573,57 @@ print(f"Best loss: {min_loss.detach().numpy()}")
 
 - When we print out the Best Loss, we get a value of about 0.53 - which is good, pretty much a half-way improvement in terms of where we started from.
 - One thing we’d like to take a look at is how the Adapter Matrix influences our Query Vector.
+- To do that we can construct a Test Vector consisting of all 1s, and we can multiply that Test Vector by our best matrix.
 
+```
+test_vector = torch.ones((mat_size,1))
+scaled_vector = np.matmul(best_matrix, test_vector).numpy()
+```
 
+- This will tell us which dimensions of our vectors get scaled by what amount.
+- You can think of an Embedding Adaptor as stretching space and squeezing space for the dimensions which are most relevant to the particular queries that we have, while reducing the dimensions that are not relevant to our query.
+- You’ll also notice that they can reverse dimensions.
+
+```
+import matplotlib.pyplot as plt
+plt.bar(range(len(scaled_vector)), scaled_vector.flatten())
+plt.show()
+
+query_embeddings = embedding_function(generated_queries)
+adapted_query_embeddings = np.matmul(best_matrix, np.array(query_embeddings).T).T
+
+projected_query_embeddings = project_embeddings(query_embeddings, umap_transform)
+projected_adapted_query_embeddings = project_embeddings(adapted_query_embeddings, umap_transform)
+
+# Plot the projected query and retrieved documents in the embedding space
+plt.figure()
+plt.scatter(projected_dataset_embeddings[:, 0], projected_dataset_embeddings[:, 1], s=10, color='gray')
+plt.scatter(projected_query_embeddings[:, 0], projected_query_embeddings[:, 1], s=150, marker='X', color='r', label="original")
+plt.scatter(projected_adapted_query_embeddings[:, 0], projected_adapted_query_embeddings[:, 1], s=150, marker='X', color='green', label="adapted")
+
+plt.gca().set_aspect('equal', 'datalim')
+plt.title("Adapted Queries")
+plt.axis('off')
+plt.legend()
+```
+
+- When we first construct the plot, we see the following image:
+
+<img src="https://drive.google.com/uc?export=view&id=1Y1kbPnCPNiIpzu9fhLfP_5kyPLEOwKXY">
+
+- Here - we see that each dimension of our Test Vector which only consisted of 1s (on being multiplied by the Best Matrix), has been stretched and squeezed.
+- Some have been elongated a lot, while others have been made almost zero, and the direction of several of them have been reversed to negative.
+- Let’s now look at what effect this has on our queries.
+- When we do the UMAP projection in 2D:
+
+<img src="https://drive.google.com/uc?export=view&id=1ctASTdgiin3IJeFrMrOnUXSY16Y6uXSl">
+
+- We see that the original 15 queries were quite scattered around, but on multiplication with the Best Matrix, the new queries are quite concentrated in a certain part of our dataset, which is quite relevant to our queries.
+- The red queries have been adapted by the Embedding Adaptor to push them into a particular part of the space - this is the part of the space closest to what’s occupied by those documents the user feedback mentioned as being relevant to the query - so that moving forward the retrieval process is likely to retrieve documents in this space, which are more relevant to the query (as mentioned by the user feedback). 
+- So as we can see, Embedding Adaptors are a simple but powerful technique for customizing query embeddings to our specific application.
+- In order to make this work, we need to collect a dataset - either a synthetic one as generated here, or one that’s based on user data, which usually works best.
+- In this method, it’s worth experimenting with different initializations of the Adaptor Matrix. It’s also worth considering using a full lightweight Neural Network and training that instead of this simple matrix.
+- We could tune the Hyperparameters of the Embedding Adaptor training process, or we could collect more data to improve the results.
 
 ## ***7 - Other Techniques***
 
