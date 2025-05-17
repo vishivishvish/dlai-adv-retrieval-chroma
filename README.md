@@ -451,6 +451,129 @@ for o in np.argsort(scores)[::-1]:
 
 ## ***6 - Embedding Adaptors***
 
+- In the last couple of sections, we’ve looked at how we use Query Augmentation and Cross-encoder Re-ranking to improve retrieval results.
+- In this section we’ll see how we can use user feedback about the relevancy of the retrieved results to automatically improve the performance of the retrieval system using a technique called Embedding Adaptors.
+- Embedding Adaptors are a way to alter the embeddings of a query directly in order to produce better retrieval results.
+
+<img src="https://drive.google.com/uc?export=view&id=1VcSCtfnYBga_Fyc-bl5jJ_h7e-zpJ29_">
+
+- In effect, we insert an additional stage in the retrieval system called the Embedding Adaptor stage, which happens after we call the Embedding model, but before we retrieve the most relevant results.
+- We train the Embedding Adaptor using user feedback on the relevancy of our retrieved results for a set of queries. 
+- Let’s look at how this is done.
+- We first grab a set of helper functions as before.
+- This time we will also import torch, because we will effectively be training a model, albeit a very lightweight one.
+- We create our Embedding function and load everything into Chroma.
+- The first thing we need is a dataset.
+- Even though we don’t have one handy here because we haven’t had users using an application, we can create such a dataset using LLMs.
+- First, we get GPT-3.5 Turbo to create 10-15 short questions for this use case (Financial Research Assistant).
+- Using these questions, we will retrieve a set of chunks for each question from Chroma DB.
+- Finally we ask the LLM itself to evaluate the results, whether they’re relevant to the query or not.
+- This is the generated dataset we’re alluding to - since we don’t currently have users to provide feedback on whether the retrieval is relevant or not.
+- In a real RAG system, we would ask our users to give a Thumbs Up / Thumbs Down as to whether the retrieved results are relevant to the query.
+- For the purpose of the model training, we transform “Yes” signals (relevant) to +1, and we transform “No” signals (not relevant) to -1.
+- This will lead to us now creating a dataset to train our Embedding Adaptor.
+- We start with both the Query Embeddings (the Embedding version of the queries - obtained by applying the Embedding Function on the Text Queries), and the Retrieved Embeddings (the Embeddings of the chunks retrieved from the Vector DB).
+
+```
+retrieved_embeddings = results['embeddings']
+query_embeddings = embedding_function(generated_queries)
+```
+
+- There are now three new lists we need to update - the Adaptor Query Embeddings, the Adaptor Doc Embeddings and the Adaptor Labels.
+
+```
+adapter_query_embeddings = []
+adapter_doc_embeddings = []
+adapter_labels = []
+
+for q, query in enumerate(tqdm(generated_queries)):
+    for d, document in enumerate(retrieved_documents[q]):
+        adapter_query_embeddings.append(query_embeddings[q])
+        adapter_doc_embeddings.append(retrieved_embeddings[q][d])
+        adapter_labels.append(evaluate_results(query, document))
+```
+
+- The Adaptor Prefix for the above just means that we’re going to use them in our Training - no other special meaning to it.
+- They’re just the embeddings of our queries and the embeddings of our documents.
+- The labels are going to be obtained from our Evaluation Model. The label is going to be +1 or -1 depending on whether the document is relevant to the query or not.
+- We will now use these +1 and -1 values as our Loss Function for Cosine Similarity Distance.
+- That’s because when two vectors are identical, the Cosine Similarity between them is 1, and when two vectors are opposite, the Cosine Similarity between them is -1.
+- So basically, we want relevant results to be pointing in the same direction to the query as vectors, and we want irrelevant results to point in the opposite direction from the given query.
+- In this situation, we have a dataset of 150 instances - 15 queries with 10 retrieved documents each (and the +1/-1 feedback for each of these documents).
+- Now, because we’re going to use Torch to train our Embedding Model, we need to transform our dataset into a Torch tensor dataset.
+
+```
+adapter_query_embeddings = torch.Tensor(np.array(adapter_query_embeddings))
+adapter_doc_embeddings = torch.Tensor(np.array(adapter_doc_embeddings))
+adapter_labels = torch.Tensor(np.expand_dims(np.array(adapter_labels),1))
+
+dataset = torch.utils.data.TensorDataset(adapter_query_embeddings, adapter_doc_embeddings, adapter_labels)
+```
+
+- Now that the dataset is created, we can set up the model for training.
+- It is fairly straightforward to do so - the model takes as input a Query Embedding, a Document Embedding and an Adaptor Matrix.
+- Using this we compute an Updated Query Embedding by multiplying our original Query Embedding with an Adaptor Matrix.
+- Then we compute the Cosine Similarity between the Updated Query Embedding and the Document Embedding.
+
+```
+def model(query_embedding, document_embedding, adaptor_matrix):
+    updated_query_embedding = torch.matmul(adaptor_matrix, query_embedding)
+    return torch.cosine_similarity(updated_query_embedding, document_embedding, dim=0)
+```
+
+- Next, let’s compute our Loss Function.
+
+```
+def mse_loss(query_embedding, document_embedding, adaptor_matrix, label):
+    return torch.nn.MSELoss()(model(query_embedding, document_embedding, adaptor_matrix), label)
+```
+
+- The loss takes a Query Embedding, a Document Embedding, an Adaptor Matrix and a Label.
+- And we run the model to compute the Cosine Similarity, and we compute the Mean Squared Error between the Cosine Similarity and the Label.
+- The Adaptor Matrix is the object that is going to be trained to try to ensure relevant documents point in the same direction as the query, and the irrelevant documents point in the opposite direction.
+
+```
+# Initialize the adaptor matrix
+mat_size = len(adapter_query_embeddings[0])
+adapter_matrix = torch.randn(mat_size, mat_size, requires_grad=True)
+```
+
+- We initialize our Adaptor Matrix for training. 
+- This is very similar to a linear layer in a traditional Neural Network.
+- Next let’s set up our Training Loop.
+
+```
+min_loss = float('inf')
+best_matrix = None
+
+for epoch in tqdm(range(100)):
+    for query_embedding, document_embedding, label in dataset:
+        loss = mse_loss(query_embedding, document_embedding, adapter_matrix, label)
+
+        if loss < min_loss:
+            min_loss = loss
+            best_matrix = adapter_matrix.clone().detach().numpy()
+
+        loss.backward()
+        with torch.no_grad():
+            adapter_matrix -= 0.01 * adapter_matrix.grad
+            adapter_matrix.grad.zero_()
+```
+
+- We initialize our min_loss and our best_matrix with default values, as things to keep track of.
+- Let’s train for 100 epochs.
+- For each Query Embedding, Document Embedding and Label in our dataset, we compute our loss.
+- If the loss that we computed is better (lower) than our previous loss, we keep track of that loss and that matrix as the best matrix so far.
+- And then we backpropagate.
+- This runs quite fast, as it’s exactly as if we were training a single layer of a Neural Network.
+
+```
+print(f"Best loss: {min_loss.detach().numpy()}")
+```
+
+- When we print out the Best Loss, we get a value of about 0.53 - which is good, pretty much a half-way improvement in terms of where we started from.
+- One thing we’d like to take a look at is how the Adapter Matrix influences our Query Vector.
+
 
 
 ## ***7 - Other Techniques***
