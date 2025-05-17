@@ -6,6 +6,8 @@
 
 **Anton Troynikov - Co-Founder & Advisor, Chroma**
 
+***Last Update: Saturday, 05/17/2025***
+
 ***Notes by Vishnu Subramanian***
 
 ## ***1 - Introduction***
