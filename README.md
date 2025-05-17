@@ -646,5 +646,3 @@ plt.legend()
 - Finally we covered some of the more exciting work that’s ongoing right now in the research literature around improving retrieval for AI applications.
 
 **The End!**
-
-***WIP - More Notes Incoming!***
